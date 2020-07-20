@@ -32,9 +32,9 @@
 // </div>
 
 
- import Vue from 'vue/dist/vue.esm'
- //import Task from '../task.vue'
-// import task from 'task-components'
+    import Vue from 'vue/dist/vue.esm'
+ 
+    const Api = require('./api');
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -60,7 +60,8 @@ Vue.component('task',{
          </div>
         `, 
    methods:{
-        findTask: function(id){
+
+              findTask: function(id){
             return app.tasks.find(item => item.id == id);
         },
        toggleDone: function(event, id){
@@ -96,32 +97,7 @@ Vue.component('task',{
  var app =  new Vue({
      el: '#app',
      data: {
-        tasks: [
-            {   
-                id:1, 
-                name:'Todo 1', 
-                description: 'This is a todo', 
-                completed: false
-            },
-            {   
-                id:2, 
-                name:'Todo 2', 
-                description: 'this is the todo number 2', 
-                completed: true
-            },
-            {   
-                id:3, 
-                name:'Todo 3', 
-                description: 'This is todo number 3', 
-                completed: true  
-            }, 
-            {   
-                id:4, 
-                name:'Todo 4', 
-                description: 'This is todo number 4', 
-                completed: true 
-            }
-        ],
+        tasks:[], 
         task: {},
         message: '',
         action: 'create'
@@ -139,6 +115,11 @@ Vue.component('task',{
        
     },
     methods:{
+         listTasks: function(){
+           Api.listTasks().then(function(response){
+                app.tasks = response;
+           });
+        },
         clear: function(){
             this.task = {};
             this.action = 'create';
@@ -161,15 +142,18 @@ Vue.component('task',{
             event.stopImmediatePropagation();
             
             (!this.task.completed) ? this.task.completed = false : this.task.completed = true;
-            let taskId = this.nextId;
-            this.task.id = taskId;
-            let newTask = Object.assign({}, this.task);
-            this.tasks.push(newTask);
-            this.clear();
-            this.message = `Task ${taskId} created.`
             
+            Api.createTask(this.task).then(function(response){
+                app.listTasks();
+                app.clear();
+                app.message = `Task ${response.id} created.`
+      
+            })
+
+                       
         }
     },
+    beforeMount(){this.listTasks()}
     //components: {task}
    });
  })
