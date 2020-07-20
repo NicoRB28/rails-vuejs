@@ -43,20 +43,21 @@ Vue.component('task',{
     template:
         `
            <div class="ui segment task" v-bind:class="task.completed ? 'done' : 'todo'"> 
-                <div class="ui grid">
-                    <div class="row">
-                        <div class="left floated equal wide column">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="task" v-on:click="toggleDone($event, task.id)" :checked="task.completed">
-                                <label>{{task.name}}<span class="description">{{task.description}}</span></label>
-                            </div>
-                        <div>
-                        <div class="right floated equal wide column">
-                            <i class="icon pencil" alt="Edit" v-on:click="editTask($event, task.id)"></i>
-                            <i class="icon trash" alt="Delete" v-on:click="deleteTask($event, task.id)"></i>
+              <div class="ui grid">
+                <div class="row">
+                    <div class="left floated twelve wide column">
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="task" v-on:click="toggleDone($event, task.id)" :checked="task.completed">
+                            <label>{{task.name}}<span class="description">{{task.description}}</span></label>
                         </div>
                     </div>
+                    <div class="right floated three wide column">
+                        <i class="icon pencil" alt="Edit" v-on:click="editTask($event, task.id)"></i>
+                        <i class="icon trash" alt="Delete" v-on:click="deleteTask($event, task.id)"></i>
+                    </div>
+                </div>
              </div>
+         </div>
         `, 
    methods:{
         findTask: function(id){
@@ -92,7 +93,7 @@ Vue.component('task',{
        }
    }
 })
-    new Vue({
+ var app =  new Vue({
      el: '#app',
      data: {
         tasks: [
