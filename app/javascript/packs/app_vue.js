@@ -26,8 +26,7 @@ Vue.component('task',{
          </div>
         `, 
    methods:{
-
-              findTask: function(id){
+       findTask: function(id){
             return app.tasks.find(item => item.id == id);
         },
        toggleDone: function(event, id){
