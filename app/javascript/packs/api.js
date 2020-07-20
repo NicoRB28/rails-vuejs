@@ -16,3 +16,25 @@ export async function createTask (task){
                     console.log(error);
                 })
 }
+export async function updateTask(task){
+    var localTask = {name: task.name,
+                     description: task.description,
+                     completed: task.completed
+                    }
+    return axios.put(`/tasks/${task.id}.json`, localTask)
+                .then(function(response){
+                    return response.data;
+                })
+                .catch(function(error){
+                    console.log(error);
+                })
+}
+export async function deleteTask(id){
+   axios.delete(`/tasks/${id}.json`)
+        .then(function(response){
+             return 'success';
+        })
+        .catch(function(error){
+             console.log(error);
+        })
+}

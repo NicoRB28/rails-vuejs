@@ -1,40 +1,6 @@
-/* eslint no-console: 0 */
-// Run this example by adding <%= javascript_pack_tag 'hello_vue' %> (and
-// <%= stylesheet_pack_tag 'hello_vue' %> if you have styles in your component)
-// to the head of your layout file,
-// like app/views/layouts/application.html.erb.
-// All it does is render <div>Hello Vue</div> at the bottom of the page.
+import Vue from 'vue/dist/vue.esm'
 
-//import Vue from 'vue'
-//import App from '../app.vue'
-
-//document.addEventListener('DOMContentLoaded', () => {
-  //const app = new Vue({
-   // render: h => h(App)
-//  }).$mount()
-//  document.body.appendChild(app.$el)
-
-//  console.log(app)
-//})
-
-
-// The above code uses Vue without the compiler, which means you cannot
-// use Vue to target elements in your existing html templates. You would
-// need to always use single file components.
-// To be able to target elements in your existing html/erb templates,
-// comment out the above code and uncomment the below
-// Add <%= javascript_pack_tag 'hello_vue' %> to your layout
-// Then add this markup to your html template:
-//
-// <div id='hello'>
- //  {{message}}
-  // <app></app>
-// </div>
-
-
-    import Vue from 'vue/dist/vue.esm'
- 
-    const Api = require('./api');
+const Api = require('./api');
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -67,9 +33,17 @@ Vue.component('task',{
        toggleDone: function(event, id){
            event.stopImmediatePropagation();
            let task = this.findTask(id);
+           
            if(task){
                task.completed = !task.completed;
-               app.message = `Task $${id} updated.`
+               this.task = task;
+               
+               Api.updateTask(this.task).then(function(response){
+                   app.listTasks();
+                   app.clear();
+                   let status = (response.completed) ? 'completed' : 'in progress';
+                   app.message = `Task ${response.id} is ${status} .`
+               })
            }
        },
        editTask: function(id){
@@ -87,9 +61,12 @@ Vue.component('task',{
        deleteTask: function(event, id){
             event.stopImmediatePropagation();
            let taskIndex = app.tasks.findIndex(item => item.id == id);
+    
            if(taskIndex >= 0){
-                app.$delete(app.tasks, taskIndex);
-               app.message = `Task ${id} deleted.`
+               Api.deleteTask(id).then(function(response){
+                    app.$delete(app.tasks, taskIndex)
+                    app.message = `Task ${id} deleted.`;
+               });
            }
        }
    }
@@ -128,15 +105,12 @@ Vue.component('task',{
         updateTask: function(event, id){
             event.stopImmediatePropagation();
             
+            Api.updateTask(this.task).then(function(response){
+                app.listTasks();
+                app.clear();
+                app.message = `Task ${response.id} updated.`;
+            });
             
-            let task = this.tasks.find(item => item.id == id);
-            
-            if (task){
-                task.name = this.task.name;
-                task.description = this.task.description;
-                task.completed = this.task.completed;
-                this.message = `Task ${id} updated.`
-            }
         },
         createTask: function(event){
             event.stopImmediatePropagation();
