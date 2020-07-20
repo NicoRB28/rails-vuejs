@@ -52,7 +52,7 @@ Vue.component('task',{
                         </div>
                     </div>
                     <div class="right floated three wide column">
-                        <i class="icon pencil" alt="Edit" v-on:click="editTask($event, task.id)"></i>
+                        <i class="icon pencil" alt="Edit" v-on:click="editTask(task.id)"></i>
                         <i class="icon trash" alt="Delete" v-on:click="deleteTask($event, task.id)"></i>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ Vue.component('task',{
                app.message = `Task $${id} updated.`
            }
        },
-       editTask: function(event, id){
+       editTask: function(id){
             app.action = 'edit';
            let task = this.findTask(id);
            if(task){
